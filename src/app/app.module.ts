@@ -7,6 +7,9 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 
+import { OneSignal } from '@ionic-native/onesignal';
+import { PushnotificationProvider } from '../providers/pushnotification/pushnotification';
+
 @NgModule({
   declarations: [
     MyApp,
@@ -24,7 +27,9 @@ import { HomePage } from '../pages/home/home';
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    OneSignal,
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    PushnotificationProvider
   ]
 })
 export class AppModule {}

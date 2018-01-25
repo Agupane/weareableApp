@@ -1,19 +1,19 @@
-<!--
-  Generated template for the HomePage page.
 
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
-
-  <ion-navbar>
-    <ion-title>Reminder weareable app!</ion-title>
+  <ion-navbar color="primary">
+    <ion-title>{{viewTitle}}</ion-title>
+    <ion-buttons end>
+      <button ion-button [disabled]="isToday" (click)="today()">Today</button>
+      <button ion-button (click)="changeMode('month')">M</button>
+      <button ion-button (click)="changeMode('week')">W</button>
+      <button ion-button (click)="changeMode('day')">D</button>
+      <button ion-button (click)="loadEvents()">Load Events</button>
+    </ion-buttons>
   </ion-navbar>
-
 </ion-header>
 
 
-<ion-content>
+<ion-content class="has-header">
 <!--  <ion-row text-center>
     <ion-col col-6>
       <button ion-button (click)="btnSearchClicked()">Weareable Search</button>
@@ -22,10 +22,12 @@
       <button ion-button color="secondary">Button Example</button>
     </ion-col>
   </ion-row>-->
-  <ion-row>
+
     <calendar [eventSource]="eventSource"
               [calendarMode]="calendar.mode"
               [currentDate]="calendar.currentDate"
+              [formatDayTitle]="calendar.formatDayTitle"
+              [formatMonthTitle]="calendar.formatMonthTitle"
               (onCurrentDateChanged)="onCurrentDateChanged($event)"
               (onRangeChanged)="reloadSource(startTime, endTime)"
               (onEventSelected)="onEventSelected($event)"
@@ -33,5 +35,5 @@
               (onTimeSelected)="onTimeSelected($event)"
               step="30">
     </calendar>
-  </ion-row>
+
 </ion-content>

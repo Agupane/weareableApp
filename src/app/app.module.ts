@@ -8,7 +8,9 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 
 import { OneSignal } from '@ionic-native/onesignal';
-import { PushnotificationProvider } from '../providers/pushnotification/pushnotification';
+
+import { LocalNotifications } from "@ionic-native/local-notifications";
+import { NgCalendarModule  } from 'ionic2-calendar';
 
 @NgModule({
   declarations: [
@@ -17,7 +19,8 @@ import { PushnotificationProvider } from '../providers/pushnotification/pushnoti
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    NgCalendarModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -28,8 +31,8 @@ import { PushnotificationProvider } from '../providers/pushnotification/pushnoti
     StatusBar,
     SplashScreen,
     OneSignal,
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
-    PushnotificationProvider
+    LocalNotifications,
+    {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
 export class AppModule {}

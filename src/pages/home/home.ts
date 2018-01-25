@@ -1,13 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ModalController, AlertController } from 'ionic-angular';
+import { EventCreationModalPage } from "../event-creation-modal/event-creation-modal";
 //import { LocalNotifications } from "@ionic-native/local-notifications";
 
-/**
- * Generated class for the HomePage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @IonicPage()
 @Component({
@@ -23,6 +18,8 @@ export class HomePage {
   calendar = {
     mode: 'month',
     currentDate: new Date(),
+    /** At the beginning the current selected is the same as the current date **/
+    currentTimeSelected: new Date(),
     dateFormatter: {
       formatMonthViewDay: function(date:Date) {
         return date.getDate().toString();
@@ -51,7 +48,7 @@ export class HomePage {
     }
   };
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, public modalCtrl: ModalController) {
 
   }
 
@@ -89,6 +86,7 @@ export class HomePage {
     console.log("Time selected: ", ev);
     console.log('Selected time: ' + ev.selectedTime + ', hasEvents: ' +
       (ev.events !== undefined && ev.events.length !== 0) + ', disabled: ' + ev.disabled);
+    this.calendar.currentTimeSelected = ev.selectedTime;
   }
 
   public loadEvents() {
@@ -111,4 +109,47 @@ export class HomePage {
     return date < current;
   };
 
+  /**
+   * Called when the users want to create a reminder on the current day
+   */
+  public onCreateEvent(){
+    console.log("Create event button clicked");
+    let alert = this.alertCtrl.create({
+      title: 'Confirm reminder',
+      message: 'Do you want to create reminder for '+this.calendar.currentTimeSelected+' ?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () =>{
+            console.log("Cancel reminder clicked");
+          }
+        },
+        {
+          text: 'Accept',
+          handler: () =>{
+            console.log("Accept reminder creation clicked");
+            this.displayEventCreationDialog();
+          }
+        }
+      ]
+    });
+
+    alert.present();
+  }
+
+  /**
+   * Called when the users wants to delete a reminder on the current day
+   */
+  public onDeleteEvent(){
+    console.log("Delete event button clicked");
+  }
+
+  /**
+   * Displays a dialog to create a event reminder
+   */
+  private displayEventCreationDialog(){
+      let eventCreationModal = this.modalCtrl.create(EventCreationModalPage);
+      eventCreationModal.present();
+  }
 }

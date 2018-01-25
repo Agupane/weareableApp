@@ -1,39 +1,39 @@
 
 <ion-header>
   <ion-navbar color="primary">
-    <ion-title>{{viewTitle}}</ion-title>
+    <ion-title>Weareblendar!</ion-title>
     <ion-buttons end>
-      <button ion-button [disabled]="isToday" (click)="today()">Today</button>
+<!--      <button ion-button [disabled]="isToday" (click)="today()">Today</button>
       <button ion-button (click)="changeMode('month')">M</button>
       <button ion-button (click)="changeMode('week')">W</button>
-      <button ion-button (click)="changeMode('day')">D</button>
-      <button ion-button (click)="loadEvents()">Load Events</button>
+      <button ion-button (click)="changeMode('day')">D</button>-->
+      <button ion-button (click)="onCreateEvent()">Reminder</button>
+      <button ion-button (click)="onDeleteEvent()">Delete</button>
+<!--      <button ion-button (click)="loadEvents()">Load Events</button>-->
     </ion-buttons>
   </ion-navbar>
 </ion-header>
 
 
 <ion-content class="has-header">
-<!--  <ion-row text-center>
+  <calendar [eventSource]="eventSource"
+            [calendarMode]="calendar.mode"
+            [currentDate]="calendar.currentDate"
+            [formatDayTitle]="calendar.formatDayTitle"
+            [formatMonthTitle]="calendar.formatMonthTitle"
+            (onCurrentDateChanged)="onCurrentDateChanged($event)"
+            (onRangeChanged)="reloadSource(startTime, endTime)"
+            (onEventSelected)="onEventSelected($event)"
+            (onTitleChanged)="onViewTitleChanged($event)"
+            (onTimeSelected)="onTimeSelected($event)"
+            step="30">
+  </calendar>
+  <ion-row text-center>
     <ion-col col-6>
       <button ion-button (click)="btnSearchClicked()">Weareable Search</button>
     </ion-col>
     <ion-col col-6>
       <button ion-button color="secondary">Button Example</button>
     </ion-col>
-  </ion-row>-->
-
-    <calendar [eventSource]="eventSource"
-              [calendarMode]="calendar.mode"
-              [currentDate]="calendar.currentDate"
-              [formatDayTitle]="calendar.formatDayTitle"
-              [formatMonthTitle]="calendar.formatMonthTitle"
-              (onCurrentDateChanged)="onCurrentDateChanged($event)"
-              (onRangeChanged)="reloadSource(startTime, endTime)"
-              (onEventSelected)="onEventSelected($event)"
-              (onTitleChanged)="onViewTitleChanged($event)"
-              (onTimeSelected)="onTimeSelected($event)"
-              step="30">
-    </calendar>
-
+  </ion-row>
 </ion-content>

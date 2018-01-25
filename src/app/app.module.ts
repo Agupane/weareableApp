@@ -11,11 +11,13 @@ import { OneSignal } from '@ionic-native/onesignal';
 
 import { LocalNotifications } from "@ionic-native/local-notifications";
 import { NgCalendarModule  } from 'ionic2-calendar';
+import { EventCreationModalPage } from "../pages/event-creation-modal/event-creation-modal";
 
 @NgModule({
   declarations: [
     MyApp,
-    HomePage
+    HomePage,
+    EventCreationModalPage
   ],
   imports: [
     BrowserModule,
@@ -25,7 +27,8 @@ import { NgCalendarModule  } from 'ionic2-calendar';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage
+    HomePage,
+    EventCreationModalPage
   ],
   providers: [
     StatusBar,

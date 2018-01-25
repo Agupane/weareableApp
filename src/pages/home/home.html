@@ -1,15 +1,15 @@
 
 <ion-header>
   <ion-navbar color="primary">
-    <ion-title>Weareblendar!</ion-title>
+    <ion-title>{{viewTitle}}</ion-title>
     <ion-buttons end>
 <!--      <button ion-button [disabled]="isToday" (click)="today()">Today</button>
       <button ion-button (click)="changeMode('month')">M</button>
       <button ion-button (click)="changeMode('week')">W</button>
-      <button ion-button (click)="changeMode('day')">D</button>-->
-      <button ion-button (click)="onCreateEvent()">Reminder</button>
+      <button ion-button (click)="changeMode('day')">D</button>
+      <button ion-button (click)="onCreateEvent()">Reminder</button>-->
       <button ion-button (click)="onDeleteEvent()">Delete</button>
-<!--      <button ion-button (click)="loadEvents()">Load Events</button>-->
+      <button ion-button (click)="loadEvents()">Load Events</button>
     </ion-buttons>
   </ion-navbar>
 </ion-header>
@@ -28,6 +28,13 @@
             (onTimeSelected)="onTimeSelected($event)"
             step="30">
   </calendar>
+
+  <ion-fab bottom right>
+    <button ion-fab (click)="onCreateEvent()">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
+
   <ion-row text-center>
     <ion-col col-6>
       <button ion-button (click)="btnSearchClicked()">Weareable Search</button>

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ModalController, AlertController } from 'ionic-angular';
 import { EventCreationModalPage } from "../event-creation-modal/event-creation-modal";
+import {DateFormatter} from "@angular/common/src/pipes/deprecated/intl";
 //import { LocalNotifications } from "@ionic-native/local-notifications";
 
 
@@ -19,7 +20,7 @@ export class HomePage {
     mode: 'month',
     currentDate: new Date(),
     /** At the beginning the current selected is the same as the current date **/
-    currentTimeSelected: new Date(),
+    currentDateSelected: new Date(),
     dateFormatter: {
       formatMonthViewDay: function(date:Date) {
         return date.getDate().toString();
@@ -48,7 +49,10 @@ export class HomePage {
     }
   };
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, public modalCtrl: ModalController) {
+  constructor(public navCtrl: NavController,
+              public navParams: NavParams,
+              private alertCtrl: AlertController,
+              public modalCtrl: ModalController) {
 
   }
 
@@ -79,19 +83,21 @@ export class HomePage {
 
   public onViewTitleChanged(title:any){
     console.log("View tittle changed: ", title);
-    this.viewTitle = title;
+    let month = title.substr(0,3);
+    let year = title.substr(6,10);
+    this.viewTitle = month+" "+year;
   }
 
   public onTimeSelected(ev:any){
     console.log("Time selected: ", ev);
     console.log('Selected time: ' + ev.selectedTime + ', hasEvents: ' +
       (ev.events !== undefined && ev.events.length !== 0) + ', disabled: ' + ev.disabled);
-    this.calendar.currentTimeSelected = ev.selectedTime;
+    this.calendar.currentDateSelected = ev.selectedTime;
   }
 
   public loadEvents() {
     console.log("Load events clicked");
-   // this.eventSource = this.createRandomEvents();
+    this.eventSource = this.createRandomEvents();
   }
 
   public changeMode(mode) {
@@ -116,7 +122,7 @@ export class HomePage {
     console.log("Create event button clicked");
     let alert = this.alertCtrl.create({
       title: 'Confirm reminder',
-      message: 'Do you want to create reminder for '+this.calendar.currentTimeSelected+' ?',
+      message: 'Do you want to create reminder for '+this.calendar.currentDateSelected+' ?',
       buttons: [
         {
           text: 'Cancel',
@@ -143,13 +149,52 @@ export class HomePage {
    */
   public onDeleteEvent(){
     console.log("Delete event button clicked");
+
   }
 
   /**
    * Displays a dialog to create a event reminder
    */
   private displayEventCreationDialog(){
-      let eventCreationModal = this.modalCtrl.create(EventCreationModalPage);
+      console.log("Current date to generate event: ", this.calendar.currentDateSelected);
+      let eventCreationModal = this.modalCtrl.create(EventCreationModalPage, { startDate: this.calendar.currentDateSelected });
       eventCreationModal.present();
+  }
+
+  createRandomEvents() {
+    var events = [];
+    for (var i = 0; i < 50; i += 1) {
+      var date = new Date();
+      var eventType = Math.floor(Math.random() * 2);
+      var startDay = Math.floor(Math.random() * 90) - 45;
+      var endDay = Math.floor(Math.random() * 2) + startDay;
+      var startTime;
+      var endTime;
+      if (eventType === 0) {
+        startTime = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + startDay));
+        if (endDay === startDay) {
+          endDay += 1;
+        }
+        endTime = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + endDay));
+        events.push({
+          title: 'All Day - ' + i,
+          startTime: startTime,
+          endTime: endTime,
+          allDay: true
+        });
+      } else {
+        var startMinute = Math.floor(Math.random() * 24 * 60);
+        var endMinute = Math.floor(Math.random() * 180) + startMinute;
+        startTime = new Date(date.getFullYear(), date.getMonth(), date.getDate() + startDay, 0, date.getMinutes() + startMinute);
+        endTime = new Date(date.getFullYear(), date.getMonth(), date.getDate() + endDay, 0, date.getMinutes() + endMinute);
+        events.push({
+          title: 'Event - ' + i,
+          startTime: startTime,
+          endTime: endTime,
+          allDay: false
+        });
+      }
+    }
+    return events;
   }
 }

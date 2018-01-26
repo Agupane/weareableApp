@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import { IonicPage, NavController, NavParams, ModalController, AlertController } from 'ionic-angular';
 import { EventCreationModalPage } from "../event-creation-modal/event-creation-modal";
 import {DateFormatter} from "@angular/common/src/pipes/deprecated/intl";
+import {EventProvider} from "../../providers/event/event";
+import {CalendarComponent} from "ionic2-calendar/calendar";
 //import { LocalNotifications } from "@ionic-native/local-notifications";
 
 
@@ -12,9 +14,11 @@ import {DateFormatter} from "@angular/common/src/pipes/deprecated/intl";
 })
 export class HomePage {
 
+  @ViewChild(CalendarComponent) myCalendar:CalendarComponent;
   public isToday:boolean;
   public viewTitle;
   public eventSource;
+
 
   calendar = {
     mode: 'month',
@@ -52,12 +56,20 @@ export class HomePage {
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               private alertCtrl: AlertController,
-              public modalCtrl: ModalController) {
-
+              public modalCtrl: ModalController,
+              public eventProvider:EventProvider) {
+    this.eventProvider.eventListUpdated.subscribe(
+      (eventListUpdate:any)=>{
+        console.log("Detecting changes on the event list, updating the GUI");
+        this.loadEvents();
+      }
+    )
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad HomePage');
+    this.eventSource = this.eventProvider.getEventsInJsObjectFormat();
+    console.log("Event source loaded: ", this.eventSource);
   }
 
   public btnSearchClicked() {
@@ -97,7 +109,8 @@ export class HomePage {
 
   public loadEvents() {
     console.log("Load events clicked");
-    this.eventSource = this.createRandomEvents();
+    //this.eventSource = this.createRandomEvents();
+    this.eventSource = this.eventProvider.getEventsInJsObjectFormat();
   }
 
   public changeMode(mode) {
@@ -163,7 +176,7 @@ export class HomePage {
 
   createRandomEvents() {
     var events = [];
-    for (var i = 0; i < 50; i += 1) {
+    for (var i = 0; i < 10; i += 1) {
       var date = new Date();
       var eventType = Math.floor(Math.random() * 2);
       var startDay = Math.floor(Math.random() * 90) - 45;
@@ -195,6 +208,7 @@ export class HomePage {
         });
       }
     }
+
     return events;
   }
 }

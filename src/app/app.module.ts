@@ -12,6 +12,9 @@ import { OneSignal } from '@ionic-native/onesignal';
 import { LocalNotifications } from "@ionic-native/local-notifications";
 import { NgCalendarModule  } from 'ionic2-calendar';
 import { EventCreationModalPage } from "../pages/event-creation-modal/event-creation-modal";
+import { DbProvider } from '../providers/db/db';
+import { EventProvider } from '../providers/event/event';
+import { IonicStorageModule } from "@ionic/storage";
 
 @NgModule({
   declarations: [
@@ -22,7 +25,8 @@ import { EventCreationModalPage } from "../pages/event-creation-modal/event-crea
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
-    NgCalendarModule
+    NgCalendarModule,
+    IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -36,7 +40,9 @@ import { EventCreationModalPage } from "../pages/event-creation-modal/event-crea
     OneSignal,
     LocalNotifications,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    { provide: LOCALE_ID, useValue: 'en-US' }
+    { provide: LOCALE_ID, useValue: 'en-US' },
+    DbProvider,
+    EventProvider
   ]
 })
 export class AppModule {}

@@ -15,6 +15,8 @@ import { EventCreationModalPage } from "../pages/event-creation-modal/event-crea
 import { DbProvider } from '../providers/db/db';
 import { EventProvider } from '../providers/event/event';
 import { IonicStorageModule } from "@ionic/storage";
+import { NotificationSchedulerProvider } from '../providers/notification-scheduler/notification-scheduler';
+
 
 @NgModule({
   declarations: [
@@ -42,7 +44,8 @@ import { IonicStorageModule } from "@ionic/storage";
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     { provide: LOCALE_ID, useValue: 'en-US' },
     DbProvider,
-    EventProvider
+    EventProvider,
+    NotificationSchedulerProvider
   ]
 })
 export class AppModule {}

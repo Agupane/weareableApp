@@ -1,14 +1,15 @@
 export class EventReminder {
 
 //Fields
-  private title:string;
-  private description:string;
+  public title:string;
+  public description:string;
   private eventType:number;
-  private startDate:Date;
+  public startDate:Date;
   private endDate:Date;
   private startTime:Date;
   private endTime:Date;
   private allDay:boolean;
+  private notificationId:number;
 
   constructor (name:string, description:string, startDate:Date, endDate:Date){
     this.title = name;
@@ -17,6 +18,15 @@ export class EventReminder {
     this.endDate = endDate;
     this.startTime = startDate;
     this.endTime = endDate;
+    this.notificationId = 0;
+  }
+
+  public setNotificationId(notificationId:number){
+    this.notificationId = notificationId;
+  }
+
+  public getNotificationId(){
+    return this.notificationId;
   }
 
 }

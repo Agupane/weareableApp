@@ -4,6 +4,8 @@ import { EventCreationModalPage } from "../event-creation-modal/event-creation-m
 import {DateFormatter} from "@angular/common/src/pipes/deprecated/intl";
 import {EventProvider} from "../../providers/event/event";
 import {CalendarComponent} from "ionic2-calendar/calendar";
+import {NotificationSchedulerProvider} from "../../providers/notification-scheduler/notification-scheduler";
+import {EventReminder} from "../../model/EventReminder";
 //import { LocalNotifications } from "@ionic-native/local-notifications";
 
 
@@ -18,7 +20,7 @@ export class HomePage {
   public isToday:boolean;
   public viewTitle;
   public eventSource;
-
+  public canCreateEvent;
 
   calendar = {
     mode: 'month',
@@ -57,7 +59,8 @@ export class HomePage {
               public navParams: NavParams,
               private alertCtrl: AlertController,
               public modalCtrl: ModalController,
-              public eventProvider:EventProvider) {
+              public eventProvider:EventProvider,
+              public notifScheduler:NotificationSchedulerProvider) {
     this.eventProvider.eventListUpdated.subscribe(
       (eventListUpdate:any)=>{
         console.log("Detecting changes on the event list, updating the GUI");
@@ -80,8 +83,11 @@ export class HomePage {
     console.log("Current datechanged");
     console.log(event);
     var today = new Date();
-    today.setHours(0, 0, 0, 0);
-    event.setHours(0, 0, 0, 0);
+    if(event.getTime() >= today.getTime()){
+      this.canCreateEvent = true;
+    }
+    //today.setHours(0, 0, 0, 0);
+    //event.setHours(0, 0, 0, 0);
     this.isToday = today.getTime() === event.getTime();
   }
 
@@ -91,6 +97,8 @@ export class HomePage {
 
   public onEventSelected(event:any){
     console.log("Event selected: ", event);
+    let eventToDelete:EventReminder = new EventReminder(event.title,"",event.startTime,event.endTime);
+    this.onDeleteEvent(eventToDelete);
   }
 
   public onViewTitleChanged(title:any){
@@ -101,9 +109,7 @@ export class HomePage {
   }
 
   public onTimeSelected(ev:any){
-    console.log("Time selected: ", ev);
-    console.log('Selected time: ' + ev.selectedTime + ', hasEvents: ' +
-      (ev.events !== undefined && ev.events.length !== 0) + ', disabled: ' + ev.disabled);
+    console.log('Selected time: ' + ev.selectedTime + ', hasEvents: ' + (ev.events !== undefined && ev.events.length !== 0) + ', disabled: ' + ev.disabled);
     this.calendar.currentDateSelected = ev.selectedTime;
   }
 
@@ -158,12 +164,42 @@ export class HomePage {
   }
 
   /**
-   * Called when the users wants to delete a reminder on the current day
+   * Called when the users want to delete a reminder
    */
-  public onDeleteEvent(){
-    console.log("Delete event button clicked");
+  public onDeleteEvent(event:EventReminder){
+    console.log("Delete event open");
+    let alert = this.alertCtrl.create({
+      title: 'Confirm reminder deletion',
+      message: 'Do you want to delete the reminder '+event.startDate+' ?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () =>{
+            console.log("Cancel reminder deletion clicked");
+          }
+        },
+        {
+          text: 'Accept',
+          handler: () =>{
+            console.log("Accept reminder deletion clicked");
+            this.eventProvider.deleteEvent(event);
+          }
+        }
+      ]
+    });
 
+    alert.present();
   }
+
+  public btnExampleClicked(){
+    var a = new Date();
+    a = new Date(new Date().getTime()+1000*60);
+    console.log("Generando delayed para las : ");
+    console.log(a);
+    this.notifScheduler.delayedNotification(0,"Delayed notif","Descripcion ejemplo", a);
+  }
+
 
   /**
    * Displays a dialog to create a event reminder
@@ -210,5 +246,12 @@ export class HomePage {
     }
 
     return events;
+  }
+
+  /**
+   * Returns true if the date selected is the current day of after (not before)
+   */
+  public isEventPossible(){
+    return this.canCreateEvent;
   }
 }

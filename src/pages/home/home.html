@@ -7,8 +7,8 @@
       <button ion-button (click)="changeMode('month')">M</button>
       <button ion-button (click)="changeMode('week')">W</button>
       <button ion-button (click)="changeMode('day')">D</button>
-      <button ion-button (click)="onCreateEvent()">Reminder</button>-->
-      <button ion-button (click)="onDeleteEvent()">Delete</button>
+      <button ion-button (click)="onCreateEvent()">Reminder</button>
+      <button ion-button (click)="onDeleteEvent()">Delete</button>-->
       <button ion-button (click)="loadEvents()">Load Events</button>
     </ion-buttons>
   </ion-navbar>
@@ -30,7 +30,7 @@
   </calendar>
 
   <ion-fab bottom right>
-    <button ion-fab (click)="onCreateEvent()">
+    <button ion-fab (click)="onCreateEvent()" [disabled]="isEventPossible()">
       <ion-icon name="add"></ion-icon>
     </button>
   </ion-fab>
@@ -40,7 +40,7 @@
       <button ion-button (click)="btnSearchClicked()">Weareable Search</button>
     </ion-col>
     <ion-col col-6>
-      <button ion-button color="secondary">Button Example</button>
+      <button ion-button color="secondary" (click)="btnExampleClicked()">Button Example</button>
     </ion-col>
   </ion-row>
 </ion-content>

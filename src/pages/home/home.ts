@@ -83,11 +83,19 @@ export class HomePage {
     console.log("Current datechanged");
     console.log(event);
     var today = new Date();
-    if(event.getTime() >= today.getTime()){
+    var eventTimeComparator = event.setHours(0,0,0,0);
+    today.setHours(0,0,0,0);
+    if(event.getTime() < today.getTime()){
       this.canCreateEvent = true;
+      console.log("Can create");
+    }
+    else{
+      this.canCreateEvent = false;
+      console.log("Cant create");
     }
     //today.setHours(0, 0, 0, 0);
     //event.setHours(0, 0, 0, 0);
+    today = new Date();
     this.isToday = today.getTime() === event.getTime();
   }
 

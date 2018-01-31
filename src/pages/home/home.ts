@@ -1,11 +1,11 @@
 import {Component, ViewChild} from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController, AlertController } from 'ionic-angular';
+import {IonicPage, NavController, NavParams, ModalController, AlertController, Item} from 'ionic-angular';
 import { EventCreationModalPage } from "../event-creation-modal/event-creation-modal";
-import {DateFormatter} from "@angular/common/src/pipes/deprecated/intl";
 import {EventProvider} from "../../providers/event/event";
 import {CalendarComponent} from "ionic2-calendar/calendar";
 import {NotificationSchedulerProvider} from "../../providers/notification-scheduler/notification-scheduler";
 import {EventReminder} from "../../model/EventReminder";
+import {WeareableBleProvider} from "../../providers/weareable-ble/weareable-ble";
 //import { LocalNotifications } from "@ionic-native/local-notifications";
 
 
@@ -21,6 +21,10 @@ export class HomePage {
   public viewTitle;
   public eventSource;
   public canCreateEvent;
+  public bleConnected:boolean;
+  public bleConnectedToggle:boolean;
+  public bleConnectedColor:string;
+
 
   calendar = {
     mode: 'month',
@@ -60,19 +64,26 @@ export class HomePage {
               private alertCtrl: AlertController,
               public modalCtrl: ModalController,
               public eventProvider:EventProvider,
-              public notifScheduler:NotificationSchedulerProvider) {
+              public notifScheduler:NotificationSchedulerProvider,
+              public bleProvider:WeareableBleProvider) {
+
     this.eventProvider.eventListUpdated.subscribe(
       (eventListUpdate:any)=>{
         console.log("Detecting changes on the event list, updating the GUI");
         this.loadEvents();
       }
+    );
+
+    this.bleProvider.bleConnected.subscribe(
+      (bleConnected:boolean)=>{
+        console.log("Detecting changes on the BLE conection, updating the gui to: "+ bleConnected);
+        this.bleConnected = bleConnected;
+      }
     )
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad HomePage');
     this.eventSource = this.eventProvider.getEventsInJsObjectFormat();
-    console.log("Event source loaded: ", this.eventSource);
   }
 
   public btnSearchClicked() {
@@ -80,18 +91,15 @@ export class HomePage {
   }
 
   public onCurrentDateChanged(event:any){
-    console.log("Current datechanged");
-    console.log(event);
+    console.log("Current datechanged", event);
     var today = new Date();
     var eventTimeComparator = event.setHours(0,0,0,0);
     today.setHours(0,0,0,0);
     if(event.getTime() < today.getTime()){
       this.canCreateEvent = true;
-      console.log("Can create");
     }
     else{
       this.canCreateEvent = false;
-      console.log("Cant create");
     }
     //today.setHours(0, 0, 0, 0);
     //event.setHours(0, 0, 0, 0);
@@ -261,5 +269,34 @@ export class HomePage {
    */
   public isEventPossible(){
     return this.canCreateEvent;
+  }
+
+  /**
+   * Connects the phone to the weareable
+   */
+  public toggleWearable(event: any){
+    console.log("Toggle button clicked ", event.value);
+    if(event.value) {
+      this.bleProvider.connectToWearable();
+      /** TODO - We can use this as a promise **/
+      console.log("Connected to the wearable");
+      this.bleConnected = true;
+    }
+    else{
+      this.bleProvider.disconnectWearable();
+      /** TODO - We can use this as a promise **/
+      this.bleConnected = false;
+    }
+  }
+
+  public getToggleColor(){
+    this.bleConnectedToggle = this.bleConnected;
+    if(this.bleConnected){
+      this.bleConnectedColor = 'green';
+    }
+    else{
+      this.bleConnectedColor = 'red';
+    }
+    return this.bleConnectedColor;
   }
 }

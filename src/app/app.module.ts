@@ -16,7 +16,8 @@ import { DbProvider } from '../providers/db/db';
 import { EventProvider } from '../providers/event/event';
 import { IonicStorageModule } from "@ionic/storage";
 import { NotificationSchedulerProvider } from '../providers/notification-scheduler/notification-scheduler';
-
+import { WearableBleProvider } from '../providers/weareable-ble/weareable-ble';
+import { BLE } from '@ionic-native/ble';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,9 @@ import { NotificationSchedulerProvider } from '../providers/notification-schedul
     { provide: LOCALE_ID, useValue: 'en-US' },
     DbProvider,
     EventProvider,
-    NotificationSchedulerProvider
+    NotificationSchedulerProvider,
+    WearableBleProvider,
+    BLE
   ]
 })
 export class AppModule {}

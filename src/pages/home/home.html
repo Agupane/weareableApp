@@ -8,9 +8,17 @@
       <button ion-button (click)="changeMode('week')">W</button>
       <button ion-button (click)="changeMode('day')">D</button>
       <button ion-button (click)="onCreateEvent()">Reminder</button>
-      <button ion-button (click)="onDeleteEvent()">Delete</button>-->
-      <button ion-button (click)="loadEvents()">Load Events</button>
+      <button ion-button (click)="onDeleteEvent()">Delete</button>
+      <button ion-button (click)="loadEvents()">Load Events</button>-->
+
+
+      <ion-item class="labelConnection" no-lines>
+        <ion-label [ngStyle]="{ 'color': getToggleColor() }">Weareable</ion-label>
+        <ion-toggle [(ngModel)]="bleConnectedToggle" (ionChange)="toggleWearable($event)"></ion-toggle>
+      </ion-item>
     </ion-buttons>
+
+
   </ion-navbar>
 </ion-header>
 
@@ -35,12 +43,12 @@
     </button>
   </ion-fab>
 
-  <ion-row text-center>
+<!--  <ion-row text-center>
     <ion-col col-6>
       <button ion-button (click)="btnSearchClicked()">Weareable Search</button>
     </ion-col>
     <ion-col col-6>
       <button ion-button color="secondary" (click)="btnExampleClicked()">Button Example</button>
     </ion-col>
-  </ion-row>
+  </ion-row>-->
 </ion-content>

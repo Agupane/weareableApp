@@ -5,7 +5,7 @@ import {EventProvider} from "../../providers/event/event";
 import {CalendarComponent} from "ionic2-calendar/calendar";
 import {NotificationSchedulerProvider} from "../../providers/notification-scheduler/notification-scheduler";
 import {EventReminder} from "../../model/EventReminder";
-import {WeareableBleProvider} from "../../providers/weareable-ble/weareable-ble";
+import {WearableBleProvider} from "../../providers/weareable-ble/weareable-ble";
 //import { LocalNotifications } from "@ionic-native/local-notifications";
 
 
@@ -65,7 +65,7 @@ export class HomePage {
               public modalCtrl: ModalController,
               public eventProvider:EventProvider,
               public notifScheduler:NotificationSchedulerProvider,
-              public bleProvider:WeareableBleProvider) {
+              public bleProvider:WearableBleProvider) {
 
     this.eventProvider.eventListUpdated.subscribe(
       (eventListUpdate:any)=>{

@@ -1,5 +1,8 @@
 import {Component, ViewChild} from '@angular/core';
-import {IonicPage, NavController, NavParams, ModalController, AlertController, Item} from 'ionic-angular';
+import {
+  IonicPage, NavController, NavParams, ModalController, AlertController, Item,
+  LoadingController, ToastController
+} from 'ionic-angular';
 import { EventCreationModalPage } from "../event-creation-modal/event-creation-modal";
 import {EventProvider} from "../../providers/event/event";
 import {CalendarComponent} from "ionic2-calendar/calendar";
@@ -24,7 +27,7 @@ export class HomePage {
   public bleConnected:boolean;
   public bleConnectedToggle:boolean;
   public bleConnectedColor:string;
-
+  private connectingLoad;
 
   calendar = {
     mode: 'month',
@@ -65,7 +68,9 @@ export class HomePage {
               public modalCtrl: ModalController,
               public eventProvider:EventProvider,
               public notifScheduler:NotificationSchedulerProvider,
-              public bleProvider:WearableBleProvider) {
+              public bleProvider:WearableBleProvider,
+              public loadingCtrl:LoadingController,
+              public toastCtrl:ToastController) {
 
     this.eventProvider.eventListUpdated.subscribe(
       (eventListUpdate:any)=>{
@@ -78,6 +83,9 @@ export class HomePage {
       (bleConnected:boolean)=>{
         console.log("Detecting changes on the BLE conection, updating the gui to: "+ bleConnected);
         this.bleConnected = bleConnected;
+        if(this.bleConnected) {
+          this.connectingLoad.dismiss();
+        }
       }
     )
   }
@@ -277,16 +285,42 @@ export class HomePage {
   public toggleWearable(event: any){
     console.log("Toggle button clicked ", event.value);
     if(event.value) {
+      /** We show the loading text until the connection is established **/
+      this.presentLoadingDefault();
+      /** And we connect to the wearable **/
       this.bleProvider.connectToWearable();
       /** TODO - We can use this as a promise **/
-      console.log("Connected to the wearable");
-      this.bleConnected = true;
+     // console.log("Connected to the wearable");
+     // this.bleConnected = true;
+      /** In the case we cant connect after 10 seconds, we abort **/
+      setTimeout(() => {
+        if(!this.bleConnected){
+          let toast = this.toastCtrl.create({
+            message: 'The connection with the wearable could not be established',
+            duration: 3000,
+            position: 'middle'
+          });
+          toast.present();
+          this.bleProvider.disconnectWearable();
+          this.connectingLoad.dismiss();
+          event.value = false;
+        }
+      }, 10000);
     }
     else{
       this.bleProvider.disconnectWearable();
       /** TODO - We can use this as a promise **/
       this.bleConnected = false;
     }
+  }
+
+  private presentLoadingDefault() {
+    this.connectingLoad = this.loadingCtrl.create({
+      content: 'Please wait while connecting to the wearable...'
+    });
+
+    this.connectingLoad.present();
+
   }
 
   public getToggleColor(){

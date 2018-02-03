@@ -88,17 +88,11 @@ export class WearableBleProvider {
 
   private onConnected(wearable){
     console.log("Service connected sucessfull ", wearable);
-    /** We also subscribe to state notifications to know if there is a disconnection **/
-    this.ble.startStateNotifications()
-      .subscribe(
-        connected => console.log("Connected"),
-        disconnected => this.onDeviceDisconnected(this.wearable)
-      );
     let cycleInterval;
     this.ngZone.run(() => {
       this.setStatus('');
       this.wearable = wearable;
-      /** We alert the GUI that there is an established conection with the wearable **/
+      /** We alert the GUI that there is an established connection with the wearable **/
       this.bleConnected.emit(true);
 
       // Reset data to initial state
@@ -113,7 +107,7 @@ export class WearableBleProvider {
   }
 
   private shiftByteAndSend() {
-    console.log("Shift and sendind bytes");
+    console.log("Shift and sending bytes");
     // Shift ("rotate") byte by one, so FF000000 becomes 00FF000000 and so on.
     for (let i = 0; i < 5; i++) {
       this.lastDataWearable[i] = this.dataWearable[i];
@@ -123,7 +117,14 @@ export class WearableBleProvider {
     }
 
     // Send byte array to wearable.
-    this.ble.writeWithoutResponse(this.wearable.id, this.VIB_SERVICE, this.VIB_CHARACTERISTIC_MOTORS_ON, this.dataWearable.buffer)
+ /*   this.ble.writeWithoutResponse(this.wearable.id, this.VIB_SERVICE, this.VIB_CHARACTERISTIC_MOTORS_ON, this.dataWearable.buffer)
+      .then((sucess)=>{
+        console.log("Data sucessfully writed ",sucess);
+      })
+      .catch((error)=>{
+        console.log("Error writing on the wearable: ", error);
+      });*/
+    this.ble.write(this.wearable.id, this.VIB_SERVICE, this.VIB_CHARACTERISTIC_MOTORS_ON, this.dataWearable.buffer)
       .then((sucess)=>{
         console.log("Data sucessfully writed ",sucess);
       })

@@ -26,7 +26,11 @@ export class EventCreationModalPage {
     let month = this.startDate.getMonth()+1;
     if(month<10){
       /** We add 0 in front of the month in order to parse it **/
-      month = "0"+month;
+       month = "0"+month;
+    }
+    if(day<10){
+      /** We add 0 in front of the month in order to parse it **/
+      day = "0"+day;
     }
     let year = this.startDate.getFullYear();
 
@@ -34,23 +38,23 @@ export class EventCreationModalPage {
     let dateForHourAndMinutes = new Date();
     let hour = dateForHourAndMinutes.getHours();
     let minutes = dateForHourAndMinutes.getMinutes();
-/*    let hour = this.startDate.getHours();
-    let minutes = this.startDate.getMinutes();*/
 
-    console.log("Date to create: ");
+/*    console.log("Date to create: ");
     console.log(this.startDate);
+    console.log("Day to create: ");
+    console.log(this.startDate.getDate());
+    console.log("Month to create: ");
+    console.log(month);
+    console.log("Year to create: ");
+    console.log(this.startDate.getFullYear());
     console.log("Time in hours to create: ");
     console.log(hour);
     console.log("Time in minutes to create: ");
-    console.log(minutes);
-/*    if(hour === 0){
-      hour = "00";
-    }*/
-
+    console.log(minutes);*/
     this.startDate = year + "-" + month + "-" + day+"T"+hour+":"+minutes;
-
-    //console.log("Final start date: ");
-    //console.log(this.startDate);
+/*
+    console.log("Final start date: ");
+    console.log(this.startDate);*/
 
   }
 

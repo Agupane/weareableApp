@@ -23,12 +23,12 @@
 
     <ion-item>
       <ion-label>Start</ion-label>
-      <ion-datetime displayFormat="DD/MM/YYYY, HH:mm" [(ngModel)]="startDate"></ion-datetime>
+      <ion-datetime displayFormat="DD/MM/YYYY, HH:mm" [(ngModel)]="startDate" min={{startDate}}></ion-datetime>
     </ion-item>
 
     <ion-item>
       <ion-label>End</ion-label>
-      <ion-datetime displayFormat="DD/MM/YYYY, HH:mm" [(ngModel)]="endDate"></ion-datetime>
+      <ion-datetime displayFormat="DD/MM/YYYY, HH:mm" [(ngModel)]="endDate" min={{startDate}}></ion-datetime>
     </ion-item>
 
   </ion-row>

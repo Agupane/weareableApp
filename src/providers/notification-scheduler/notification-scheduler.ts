@@ -52,7 +52,7 @@ export class NotificationSchedulerProvider {
       /** If there is an wearable connected, we make it vibrate **/
       if(this.bleConnected){
         console.log("Vibration wearable by notification");
-        this.wearableProvider.vibrateWearable(2);
+        this.wearableProvider.vibrateWearable(5);
       }
 
     })

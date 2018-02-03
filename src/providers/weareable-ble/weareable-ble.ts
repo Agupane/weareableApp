@@ -89,6 +89,12 @@ export class WearableBleProvider {
   private onConnected(wearable){
     console.log("Service connected sucessfull ", wearable);
     let cycleInterval;
+    let toast = this.toastCtrl.create({
+      message: "Wearable successfully connected",
+      duration: 1500,
+      position: 'middle'
+    });
+    toast.present();
     this.ngZone.run(() => {
       this.setStatus('');
       this.wearable = wearable;
@@ -211,7 +217,26 @@ export class WearableBleProvider {
    */
   public vibrateWearable(duration:number){
     console.log("Making the wearable vibrate for: "+duration+" seconds");
-    this.turnOnMotors([1,1,1,1],duration);
+    this.turnOnMotors([1,1,1,1],duration)
+      .then((sucess)=>{
+        console.log("Data successfully writed ",sucess);
+        console.log("Setting time out of "+duration+" seconds");
+        let savedThis = this;
+        setTimeout(function(){
+          //savedThis.disconnectWearable("Disconnection with wearable successful");
+          /** Once the vibration is done, we turn off the motors **/
+          savedThis.turnOnMotors([0,0,0,0],1)
+            .then((sucess)=>{
+              console.log("Motors turned off "+sucess);
+            })
+            .catch((error)=>{
+              console.log("Error while trying to turn of motors "+error);
+            })
+        },1000*duration);
+      })
+      .catch((error)=>{
+        console.log("Error writing on the wearable: ", error);
+      });
   }
 
   /**
@@ -232,19 +257,19 @@ export class WearableBleProvider {
     cycleInterval = setInterval(this.shiftByte(), 0.1);
 
     // Send byte array to wearable.
-    this.ble.writeWithoutResponse(this.wearable.id, this.VIB_SERVICE, this.VIB_CHARACTERISTIC_MOTORS_ON, this.dataWearable.buffer)
+    return this.ble.writeWithoutResponse(this.wearable.id, this.VIB_SERVICE, this.VIB_CHARACTERISTIC_MOTORS_ON, this.dataWearable.buffer);
+/*    this.ble.writeWithoutResponse(this.wearable.id, this.VIB_SERVICE, this.VIB_CHARACTERISTIC_MOTORS_ON, this.dataWearable.buffer)
       .then((sucess)=>{
-        console.log("Data sucessfully writed ",sucess);
+        console.log("Data successfully writed ",sucess);
         console.log("Setting time out of "+duration+" seconds");
         let savedThis = this;
         setTimeout(function(){
-          savedThis.disconnectWearable();
+          savedThis.disconnectWearable("Disconnection with wearable successful");
         },1000*duration);
-
       })
       .catch((error)=>{
         console.log("Error writing on the wearable: ", error);
-      });
+      });*/
 
 
     //this.scanTimeOut = setTimeout(this.disconnectWearable(), 1000*duration, 'Turn on motors complete');
@@ -293,13 +318,12 @@ export class WearableBleProvider {
   /**
    * If connected to the wearable, disconnects
    */
-  public disconnectWearable(){
-    console.log("Disconnecting from the wearable");
+  public disconnectWearable(msg:string){
+    console.log("Disconnecting, reason: "+msg);
     this.ble.disconnect(this.WEARABLE_UID)
       .then((success)=>{
-        console.log("Disconection from wearable successfull ", success);
         let toast = this.toastCtrl.create({
-          message: 'Disconection from wearable successfull',
+          message: msg,
           duration: 1500,
           position: 'middle'
         });

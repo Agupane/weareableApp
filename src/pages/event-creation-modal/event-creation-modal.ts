@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {IonicPage, NavController, NavParams, ViewController} from 'ionic-angular';
+import {IonicPage, NavController, NavParams, ToastController, ViewController} from 'ionic-angular';
 import { EventReminder } from '../../model/EventReminder';
 import {EventProvider} from "../../providers/event/event";
 
@@ -17,7 +17,11 @@ export class EventCreationModalPage {
   private eventName:string;
   private eventDescription:string;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public viewCtrl: ViewController, public eventProvider:EventProvider) {
+  constructor(public navCtrl: NavController,
+              public navParams: NavParams,
+              public viewCtrl: ViewController,
+              public eventProvider:EventProvider,
+              public toastCtrl:ToastController) {
     this.startDate = navParams.get('startDate');
   }
 
@@ -81,6 +85,12 @@ export class EventCreationModalPage {
 
     this.eventProvider.saveEvent(this.newEvent);
     this.viewCtrl.dismiss(this.newEvent);
+    let toast = this.toastCtrl.create({
+      message: 'The event was succesfully saved on the calendar',
+      duration: 3000,
+      position: 'middle'
+    });
+    toast.present();
   }
 
   private stringToDateParser(stringDate:string){

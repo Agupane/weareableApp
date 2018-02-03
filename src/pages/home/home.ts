@@ -1,7 +1,7 @@
 import {Component, ViewChild} from '@angular/core';
 import {
   IonicPage, NavController, NavParams, ModalController, AlertController, Item,
-  LoadingController, ToastController
+  LoadingController, ToastController, Toggle
 } from 'ionic-angular';
 import { EventCreationModalPage } from "../event-creation-modal/event-creation-modal";
 import {EventProvider} from "../../providers/event/event";
@@ -282,7 +282,7 @@ export class HomePage {
   /**
    * Connects the phone to the weareable
    */
-  public toggleWearable(event: any){
+  public toggleWearable(event: Toggle){
     console.log("Toggle button clicked ", event.value);
     if(event.value) {
       /** We show the loading text until the connection is established **/
@@ -290,27 +290,22 @@ export class HomePage {
       /** And we connect to the wearable **/
       this.bleProvider.connectToWearable();
       /** TODO - We can use this as a promise **/
-     // console.log("Connected to the wearable");
      // this.bleConnected = true;
       /** In the case we cant connect after 10 seconds, we abort **/
       setTimeout(() => {
         if(!this.bleConnected){
-          let toast = this.toastCtrl.create({
-            message: 'The connection with the wearable could not be established',
-            duration: 3000,
-            position: 'middle'
-          });
-          toast.present();
-          this.bleProvider.disconnectWearable();
+          this.bleProvider.disconnectWearable("The connection with the wearable could not be established");
           this.connectingLoad.dismiss();
           event.value = false;
         }
       }, 10000);
     }
     else{
-      this.bleProvider.disconnectWearable();
-      /** TODO - We can use this as a promise **/
-      this.bleConnected = false;
+      if(this.bleConnected) {
+        this.bleProvider.disconnectWearable("Disconnection with wearable successful");
+        /** TODO - We can use this as a promise **/
+        this.bleConnected = false;
+      }
     }
   }
 
